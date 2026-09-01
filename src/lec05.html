@@ -483,34 +483,39 @@ window.Quarto = {
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>Apply direct and iterative solvers to solve systems of linear equations; implement methods using floating point numbers and investigate computational cost using computer experiments.</p>
+<ul>
+<li>Derive and apply Jacobi and Gauss-Seidel iterative methods from a matrix splitting of a linear system;</li>
+<li>Implement iterative solvers for dense and sparse matrices and estimate their computational complexity;</li>
+<li>Evaluate convergence behaviour and justify the choice of stopping criteria for practical computations.</li>
+</ul>
 </div>
 </div>
 <section id="iterative-methods" class="level2" data-number="5.1">
 <h2 data-number="5.1" class="anchored" data-anchor-id="iterative-methods"><span class="header-section-number">5.1</span> Iterative methods</h2>
-<p>In the previous section we looked at what are known as <em>direct</em> methods for solving systems of linear equations. They are guaranteed to solve with a fixed amount of work (we can even prove this in exact arithmetic!), but this fixed amount of work may be <strong>very</strong> large.</p>
-<p>For a general <span class="math inline">\(n \times n\)</span> system of linear equations <span class="math inline">\(A \vec{x} = \vec{b}\)</span>, the computation expense of all direct methods if <span class="math inline">\(O(n^3)\)</span>. The amount of storage required for these approaches is <span class="math inline">\(O(n^2)\)</span> which is dominated by the cost of storing the matrix <span class="math inline">\(A\)</span>. As <span class="math inline">\(n\)</span> becomes larger the storage and computation work required limit the practicality of direct approaches.</p>
-<p>As an alternative, we will propose some <strong>iterative methods</strong>. Iterative methods produce a sequence <span class="math inline">\((\vec{x}^{(k)})\)</span> of approximations to the solution of the linear system of equations <span class="math inline">\(A \vec{x} = \vec{b}\)</span>. The iteration is defined recursively and is typically of the form: <span class="math display">\[
+<p>In the previous section we looked at what are known as <em>direct</em> methods for solving systems of linear equations. In exact arithmetic, they produce the solution after a finite number of operations, but this fixed amount of work may be <strong>very</strong> large.</p>
+<p>For a general <span class="math inline">\(n \times n\)</span> system of linear equations <span class="math inline">\(A \vec{x} = \vec{b}\)</span>, the computational cost of direct methods is typically <span class="math inline">\(O(n^3)\)</span>. The amount of storage required for these approaches is <span class="math inline">\(O(n^2)\)</span> which is dominated by the cost of storing the matrix <span class="math inline">\(A\)</span>. As <span class="math inline">\(n\)</span> becomes larger the storage and computation work required limit the practicality of direct approaches.</p>
+<p>As an alternative, we will propose some <strong>iterative methods</strong>. Iterative methods produce a sequence <span class="math inline">\(\{\vec{x}^{(k)}\}\)</span> of approximations to the solution of the linear system of equations <span class="math inline">\(A \vec{x} = \vec{b}\)</span>. The iteration is defined recursively and is typically of the form: <span class="math display">\[
 \vec{x}^{(k+1)} = \vec{F}(\vec{x}^{(k)}),
-\]</span> where <span class="math inline">\(\vec{x}^{(k)}\)</span> is now a vector of values and <span class="math inline">\(\vec{F}\)</span> is some vector function (which needs to be defined to define the method). We will need to choose a starting value <span class="math inline">\(\vec{x}^{(k)}\)</span> but there is often a reasonable approximation which can be used. Once all this is defined, we still need to decide when we need to stop!</p>
+\]</span> where <span class="math inline">\(\vec{x}^{(k)}\)</span> is now a vector of values and <span class="math inline">\(\vec{F}\)</span> is some vector function (which comes as part of the definition of the method). We will need to choose a starting value <span class="math inline">\(\vec{x}^{(0)}\)</span> but there is often a reasonable approximation which can be used. Once all this is defined, we still need to decide when we need to stop!</p>
 <div id="rem-iteration-notation" class="proof remark">
 <p><span class="proof-title"><em>Remark 5.1</em>. </span>We use a value in brackets in the superscript to denote the iteration number to avoid confusion between the iteration number and the component of the vector: <span class="math display">\[
 \vec{x}^{(k)} = (\vec{x}^{(k)}_1, \vec{x}^{(k)}_2, \ldots, \vec{x}^{(k)}_n).
 \]</span></p>
 </div>
+<p>The methods we consider will have the form:</p>
+<p><span class="math display">\[\begin{equation}
+\label{eq:general-iteration}
+\vec{F}(\vec{x}^{(k)}) = \vec{x}^{(k)} + P (\vec{b} - A \vec{x}^{(k)}).
+\end{equation}\]</span></p>
+<p>for some matrix <span class="math inline">\(P\)</span>. We call <span class="math inline">\(\vec{r}^{(k)} = \vec{b} - A \vec{x}^{(k)}\)</span> the <strong>residual</strong>.</p>
 <div id="exm-bad-iterations" class="theorem example">
 <p><span class="theorem-title"><strong>Example 5.1 (Some terrible examples)</strong></span> These are examples of potential iterative methods which would not work very well!</p>
 <ol type="1">
 <li><p>Consider</p>
 <p><span class="math display">\[
-\vec{F}(\vec{x}^{(k)}) = \vec{x}^{(k)}.
-\]</span></p>
-<p>Each iteration is very cheap to compute but very inaccurate - it never converges!</p></li>
-<li><p>Consider</p>
-<p><span class="math display">\[
 \vec{F}(\vec{x}^{(k)}) = \vec{x}^{(k)} + A^{-1} (\vec{b} - A \vec{x}^{(k)}).
 \]</span></p>
-<p>Each iteration is very expensive to compute - you have to invert <span class="math inline">\(A\)</span>! - but it converges in just one step since</p>
+<p>Each iteration is very expensive to compute since it requires applying <span class="math inline">\(A^{-1}\)</span> but it converges in just one step since</p>
 <p><span class="math display">\[
 \begin{aligned}
 A \vec{x}^{(k+1)} &amp; = A \vec{x}^{(k)} + A A^{-1} (\vec{b} - A \vec{x}^{(k)})
@@ -518,21 +523,22 @@ A \vec{x}^{(k+1)} &amp; = A \vec{x}^{(k)} + A A^{-1} (\vec{b} - A \vec{x}^{(k)})
 &amp; = A \vec{x}^{(k)} + \vec{b} - A \vec{x}^{(k)} \\
 &amp; = \vec{b}.
 \end{aligned}
-\]</span></p></li>
+\]</span></p>
+<p>This example uses <span class="math inline">\(P = A^{-1}\)</span>.</p></li>
+<li><p>Consider</p>
+<p><span class="math display">\[
+\vec{F}(\vec{x}^{(k)}) = \vec{x}^{(k)}.
+\]</span></p>
+<p>Each iteration is very cheap to compute but very inaccurate - it never converges!</p>
+<p>This example uses <span class="math inline">\(P = O\)</span> the zero matrix.</p></li>
 </ol>
 </div>
-<p>The key point here is that we want a method that is both computationally cheap and converges quickly to the solution. One way to do this is to construct an iteration given by</p>
-<p><span class="math display">\[\begin{equation}
-\label{eq:general-iteration}
-\vec{F}(\vec{x}^{(k)}) = \vec{x}^{(k)} + P (\vec{b} - A \vec{x}^{(k)}).
-\end{equation}\]</span></p>
-<p>for some matrix <span class="math inline">\(P\)</span> such that</p>
+<p>The key point here is that we want a method that is both computationally cheap and converges quickly to the solution. To achieve this we need to choose <span class="math inline">\(P\)</span> so that:</p>
 <ul>
-<li><span class="math inline">\(P\)</span> is easy to compute, or the matrix-vector product <span class="math inline">\(\vec{r} \mapsto P
-\vec{r}\)</span> is easy to compute,</li>
+<li><span class="math inline">\(P\)</span> is easy to compute, or the matrix-vector product <span class="math inline">\(\vec{r}^{(k)} \mapsto P
+\vec{r}^{(k)}\)</span> is easy to compute,</li>
 <li><span class="math inline">\(P\)</span> approximates <span class="math inline">\(A^{-1}\)</span> well enough that the algorithm converges in few iterations.</li>
 </ul>
-<p>We call <span class="math inline">\(\vec{b} - A \vec{x}^{(k)} = \vec{r}\)</span> the <strong>residual</strong>. Note that the above bad examples could be written in the form of <span class="math inline">\(\eqref{eq:general-iteration}\)</span> with <span class="math inline">\(P = O\)</span> (the zero matrix) or <span class="math inline">\(P = A^{-1}\)</span>.</p>
 </section>
 <section id="jacobi-iteration" class="level2" data-number="5.2">
 <h2 data-number="5.2" class="anchored" data-anchor-id="jacobi-iteration"><span class="header-section-number">5.2</span> Jacobi iteration</h2>
@@ -564,7 +570,7 @@ D_{ii} = A_{ii} \quad \text{and} \quad D_{ij} = 0 \text{ for } i \neq j.
 <li><p>Unfortunately, the iteration might not converge!</p></li>
 </ul>
 </div>
-<p>The Jacobi iteration updates all elements of <span class="math inline">\(\vec{x}^{(k)}\)</span> <em>simultaneously</em> to get <span class="math inline">\(\vec{x}^{(k+1)}\)</span>. Writing the method out component by component gives</p>
+<p>The Jacobi iteration updates all components using the values from iteration <span class="math inline">\(k\)</span>. It updates all elements of <span class="math inline">\(\vec{x}^{(k)}\)</span> <em>simultaneously</em> to get <span class="math inline">\(\vec{x}^{(k+1)}\)</span>. Writing the method out component by component gives</p>
 <p><span class="math display">\[\begin{align*}
 x_1^{(k+1)} &amp;= x_1^{(k)} + \frac{1}{A_{11}} \left( b_1 - \sum_{j=1}^n A_{1j}
 x_j^{(k)} \right) \\
@@ -607,17 +613,17 @@ A_{22} x_2^{(1)} \right) \\
 &amp;= 0.375 + \frac{1}{4} (0.5 - (-1) \times 1.25 - 4 \times 0.375) = 0.4375. \\
 \end{aligned}
 \]</span> So we have <span class="math inline">\(\vec{x}^{(2)} = (1.5625, 0.4375)\)</span>.</p>
-<p>Note the only difference between the formulae for Iteration 1 and 2 is the iteration number, the superscript in brackets. The exact solution is given by <span class="math inline">\(\vec{x} = (1.5, 0.5)^T\)</span>.</p>
+<p>Note that the only difference between the formulae for Iteration 1 and 2 is the iteration number, the superscript in brackets. The exact solution is given by <span class="math inline">\(\vec{x} = (1.5, 0.5)^T\)</span>.</p>
 </div>
 <p>We note that we can also slightly simplify the way the Jacobi iteration is written. We can expand <span class="math inline">\(A\)</span> into <span class="math inline">\(A = L + D + U\)</span>, where <span class="math inline">\(L\)</span> and <span class="math inline">\(U\)</span> are the parts of the matrix from below and above the diagonal respectively: <span class="math display">\[
 L_{ij} = \begin{cases}
-A_{ij} &amp;\quad \text{if } i &lt; j \\
-0 &amp;\quad \text{if } i \ge j,
+A_{ij} &amp;\quad \text{if } i &gt; j \\
+0 &amp;\quad \text{if } i \le j,
 \end{cases}
 \qquad
 U_{ij} = \begin{cases}
-A_{ij} &amp;\quad \text{if } i &gt; j \\
-0 &amp;\quad \text{if } i \le j.
+A_{ij} &amp;\quad \text{if } i &lt; j \\
+0 &amp;\quad \text{if } i \ge j.
 \end{cases}
 \]</span> Then we can calculate that: <span class="math display">\[
 \begin{aligned}
@@ -658,30 +664,9 @@ b_n - \sum_{j=1}^{n-1} A_{nj} x_j^{(k+1)} - A_{nn} x_n^{(k)}
 \right).
 \end{align*}\]</span></p>
 <p>Consider the system <span class="math inline">\(A \vec{x}= b\)</span> with the matrix <span class="math inline">\(A\)</span> split as <span class="math inline">\(A = L + D + U\)</span>, where <span class="math inline">\(D\)</span> is the diagonal of <span class="math inline">\(A\)</span>, <span class="math inline">\(L\)</span> contains the elements below the diagonal, and <span class="math inline">\(U\)</span> contains the elements above the diagonal. The componentwise iteration above can be written in matrix form as <span class="math display">\[
-\begin{aligned}
-\vec{x}^{(k+1)} &amp; = \vec{x}^{(k)} + D^{-1} (\vec{b} - L \vec{x}^{(k+1)} - (D + U)
-\vec{x}^{(k)}) \\
-&amp; = \vec{x}^{(k)} - D^{-1} L \vec{x}^{(k+1)} + D^{-1} (\vec{b} - (D + U)
-\vec{x}^{(k)}) \\
-&amp; = \vec{x}^{(k)} - D^{-1} L \vec{x}^{(k+1)} + D^{-1} L \vec{x}^{(k)} + D^{-1}
-(\vec{b} - (L + D + U) \vec{x}^{(k)}) \\
-\vec{x}^{(k+1)} + D^{-1} L \vec{x}^{(k+1)} &amp; = \vec{x}^{(k)} + D^{-1} L
-\vec{x}^{(k)} + D^{-1} (\vec{b} - (L + D + U) \vec{x}^{(k)}) \\
-D^{-1} (D + L) \vec{x}^{(k+1)}  &amp; = D^{-1} (D + L) \vec{x}^{(k)} + D^{-1}
-(\vec{b} - A \vec{x}^{(k)}) \\
-(D + L) \vec{x}^{(k+1)} &amp;= D D^{-1} (D + L) \vec{x}^{(k)} + D D^{-1} (\vec{b}
-- A \vec{x}^{(k)}) \\
-&amp; = (D + L) \vec{x}^{(k)} + (\vec{b} - A \vec{x}^{(k)}) \\
-\vec{x}^{(k+1)} &amp;= (D + L)^{-1} (D + L) \vec{x}^{(k)} + (D + L)^{-1} (\vec{b} -
-A \vec{x}^{(k)}) \\
-&amp; = \vec{x}^{(k)} + (D + L)^{-1} (\vec{b} - A \vec{x}^{(k)}).
-\end{aligned}
-\]</span></p>
-<p>…and hence the <strong>Gauss-Seidel</strong> iteration</p>
-<p><span class="math display">\[
 \vec{x}^{(k+1)} = \vec{x}^{(k)} + (D + L)^{-1} (\vec{b} - A \vec{x}^{(k)}).
 \]</span> That is, we use <span class="math inline">\(P = (D+L)^{-1}\)</span> in <span class="math inline">\(\eqref{eq:general-iteration}\)</span>.</p>
-<p>In general, we do not form the inverse of <span class="math inline">\(D + L\)</span> explicitly here since it is more complicated to do so than simply computing the inverse of <span class="math inline">\(D\)</span>.</p>
+<p>In practice, we do not form the inverse of <span class="math inline">\(D + L\)</span> explicitly. Since <span class="math inline">\(D + L\)</span> is lower triangular, systems involving <span class="math inline">\(D + L\)</span> can be solved efficienctly using forward substitution.</p>
 <div id="exm-gauss-seidel-iteration" class="theorem example">
 <p><span class="theorem-title"><strong>Example 5.3</strong></span> Take two iterations of Gauss-Seidel iteration to approximate the solution of the following system using the initial guess <span class="math inline">\(\vec{x}^{(0)} = (1, 1)^T\)</span>:</p>
 <p><span class="math display">\[
@@ -711,7 +696,7 @@ A_{22} x^{(0)}_2) \\
 <p>Iteration 2:</p>
 <p><span class="math display">\[
 \begin{aligned}
-x^{(2)}_1 &amp; = x^{(1)}_1 + \frac{1}{A_{11}} (b_1 - A_{11} x^{(1)}_1 a
+x^{(2)}_1 &amp; = x^{(1)}_1 + \frac{1}{A_{11}} (b_1 - A_{11} x^{(1)}_1
 - A_{12} x^{(1)}_2) \\
           &amp; = 1.25 + \frac{1}{2} (3.5 - 2 \times 1.25 - 1 \times 0.4375)
           = 1.53125 \\
@@ -727,7 +712,7 @@ x^{(2)}_2 &amp; = x^{(1)}_2 + \frac{1}{A_{22}} (b_2 - A_{21} x^{(2)}_1
 </ul>
 </div>
 <div id="exr-iterations" class="theorem exercise">
-<p><span class="theorem-title"><strong>Exercise 5.1</strong></span> Take one iteration of (a) Jacobi iteration; (b) Gauss-Seidel iteration to approximate the solution of the following system using the initial guess <span class="math inline">\(\vec{x}^{(0)} = (0, 1, 1)^T\)</span>:</p>
+<p><span class="theorem-title"><strong>Exercise 5.1</strong></span> Take one iteration of (a) Jacobi iteration and (b) Gauss-Seidel iteration to approximate the solution of the following system using the initial guess <span class="math inline">\(\vec{x}^{(0)} = (0, 1, 1)^T\)</span>:</p>
 <p><span class="math display">\[
 \begin{pmatrix}
 1 &amp; -2 &amp; 4 \\
@@ -753,10 +738,20 @@ x_1 \\ x_2 \\ x_3
 <li><p>Both iterative algorithms can be made faster and more efficient for sparse systems of equations (far more than direct methods).</p></li>
 </ul>
 </div>
+<div id="exr-gs-harder" class="theorem exercise">
+<p><span class="theorem-title"><strong>Exercise 5.2</strong></span> &nbsp;</p>
+<ol type="1">
+<li>Show that the componentwise operations written above are equivalent to <span class="math inline">\(P = (D+L)^{-1}\)</span> in <span class="math inline">\(\eqref{eq:general-iteration}\)</span>.</li>
+<li>Then show that the componentwise operations are the same as forward substitution applied to <span class="math inline">\(\eqref{eq:general-iteration}\)</span> written as <span class="math display">\[
+\vec{x}^{(k+1)} = \vec{x}^{(k)} + \vec{z}^{(k)}, \qquad
+(D + L) \vec{z}^{(k)} = (\vec{b} - A \vec{x}^{(k)}).
+\]</span></li>
+</ol>
+</div>
 </section>
 <section id="python-version-of-iterative-methods" class="level2" data-number="5.4">
 <h2 data-number="5.4" class="anchored" data-anchor-id="python-version-of-iterative-methods"><span class="header-section-number">5.4</span> Python version of iterative methods</h2>
-<div id="afd17761" class="cell" data-execution_count="2">
+<div id="bb946f63" class="cell" data-execution_count="2">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-label="1"></a><span class="kw">def</span> jacobi_iteration(A, b, x0, max_iter, verbose<span class="op">=</span><span class="va">False</span>):</span>
 <span id="cb1-2"><a href="#cb1-2" aria-label="2"></a>    <span class="co">"""</span></span>
 <span id="cb1-3"><a href="#cb1-3" aria-label="3"></a><span class="co">    Solve a linear system Ax = b using the Jacobi iterative method.</span></span>
@@ -883,7 +878,7 @@ x_1 \\ x_2 \\ x_3
 <span id="cb1-124"><a href="#cb1-124" aria-label="124"></a></span>
 <span id="cb1-125"><a href="#cb1-125" aria-label="125"></a>    <span class="cf">return</span> x</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-<div id="24e4d4f9" class="cell" data-execution_count="3">
+<div id="b9969990" class="cell" data-execution_count="3">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-label="1"></a>A <span class="op">=</span> np.array([[<span class="fl">2.0</span>, <span class="fl">1.0</span>], [<span class="op">-</span><span class="fl">1.0</span>, <span class="fl">4.0</span>]])</span>
 <span id="cb2-2"><a href="#cb2-2" aria-label="2"></a>b <span class="op">=</span> np.array([[<span class="fl">3.5</span>], [<span class="fl">0.5</span>]])</span>
 <span id="cb2-3"><a href="#cb2-3" aria-label="3"></a>x0 <span class="op">=</span> np.array([[<span class="fl">1.0</span>], [<span class="fl">1.0</span>]])</span>
@@ -922,7 +917,7 @@ after iter=4: x.T = [  1.49994,  0.49998 ]
 <li><p>The storage can be reduced from <span class="math inline">\(O(n^2)\)</span>.</p></li>
 <li><p>The cost per iteration can be reduced from <span class="math inline">\(O(n^2)\)</span>.</p></li>
 </ul>
-<p>Recall that a sparse matrix is defined to be such that it has at most <span class="math inline">\(\alpha n\)</span> non-zero entries (where <span class="math inline">\(\alpha\)</span> is independent of <span class="math inline">\(n\)</span>). Typically this happens when we know there are at most <span class="math inline">\(\alpha\)</span> non-zero entries in any row.</p>
+<p>Recall that a sparse matrix is defined to be such that it has at most <span class="math inline">\(\alpha n\)</span> non-zero entries (where <span class="math inline">\(\alpha\)</span> is independent of <span class="math inline">\(n\)</span>) – in other words, that the number of nonzero entries grows proportionally to <span class="math inline">\(n\)</span>, rather than <span class="math inline">\(n^2\)</span>. Typically this happens when we know there are at most <span class="math inline">\(\alpha\)</span> non-zero entries in any row.</p>
 <p>The simplest way in which a sparse matrix is stored is using three arrays:</p>
 <ul>
 <li>an array of floating point numbers (<code>A_real</code> say) that stores the non-zero entries;</li>
@@ -941,7 +936,7 @@ after iter=4: x.T = [  1.49994,  0.49998 ]
 <section id="python-experiments" class="level3" data-number="5.5.1">
 <h3 data-number="5.5.1" class="anchored" data-anchor-id="python-experiments"><span class="header-section-number">5.5.1</span> Python experiments</h3>
 <p>First let’s adapt our implementations to use this sparse matrix format:</p>
-<div id="ca2c7b52" class="cell" data-execution_count="5">
+<div id="7020f465" class="cell" data-execution_count="5">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-label="1"></a><span class="kw">def</span> jacobi_iteration_sparse(</span>
 <span id="cb5-2"><a href="#cb5-2" aria-label="2"></a>    A_real, I_row, I_col, b, x0, max_iter, verbose<span class="op">=</span><span class="va">False</span></span>
 <span id="cb5-3"><a href="#cb5-3" aria-label="3"></a>):</span>
@@ -1092,7 +1087,7 @@ after iter=4: x.T = [  1.49994,  0.49998 ]
 <span id="cb5-148"><a href="#cb5-148" aria-label="148"></a>    <span class="cf">return</span> x</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>Then we can test the two different implementations of the methods:</p>
-<div id="841ac714" class="cell" data-execution_count="7">
+<div id="f9ec5d56" class="cell" data-execution_count="7">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-label="1"></a><span class="co"># random matrix</span></span>
 <span id="cb6-2"><a href="#cb6-2" aria-label="2"></a>n <span class="op">=</span> <span class="dv">4</span></span>
 <span id="cb6-3"><a href="#cb6-3" aria-label="3"></a>nonzero <span class="op">=</span> <span class="dv">10</span></span>
@@ -1180,7 +1175,7 @@ after iter=4: x.T = [  0.87982,  0.73779,  0.36688,  0.36332 ]
 </div>
 <p>We see that we get the same results!</p>
 <p>Now let us see how long it takes to get a solution. The following plot shows the run times of using the two different implementations of the Jacobi method, each for 10 iterations. We see that, as expected, the run time of the dense formulation is <span class="math inline">\(O(n^2)\)</span> and the run time of the sparse formulation is <span class="math inline">\(O(n)\)</span>.</p>
-<div id="5f8727c9" class="cell" data-execution_count="9">
+<div id="8af2f874" class="cell" data-execution_count="9">
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
@@ -1201,8 +1196,8 @@ after iter=4: x.T = [  0.87982,  0.73779,  0.36688,  0.36332 ]
 <p>How can we decide if this iteration has converged? We need <span class="math inline">\(\vec{x} -
 \vec{x}^{(k)}\)</span> to be small, but we do not have access to the exact solution <span class="math inline">\(\vec{x}\)</span> so we have to do something else!</p>
 <p>How do we decide that a vector/array is small? The most common measure is to use the <em>Euclidean norm</em> of an array (which you met last year!). The Euclidean norm, or norm for short, is defined to be the square root of the sum of squares of the entries of the array: <span class="math display">\[
-\| \vec{r} \| = \sqrt{ \sum_{i=1}^n r_i^2 }.
-\]</span> where <span class="math inline">\(\vec{r}\)</span> is a vector with <span class="math inline">\(n\)</span> entries.</p>
+\| \vec{y} \| = \sqrt{ \sum_{i=1}^n y_i^2 }.
+\]</span> where <span class="math inline">\(\vec{y}\)</span> is a vector with <span class="math inline">\(n\)</span> entries.</p>
 <div id="exm-norms" class="theorem example">
 <p><span class="theorem-title"><strong>Example 5.4</strong></span> Consider the following sequence <span class="math inline">\(\vec{x}^{(k)}\)</span>:</p>
 <p><span class="math display">\[
@@ -1242,16 +1237,22 @@ after iter=4: x.T = [  0.87982,  0.73779,  0.36688,  0.36332 ]
 <li><p>A maximum number of iterations.</p></li>
 <li><p>The <em>change</em> in values is small enough:</p>
 <p><span class="math display">\[
-  \|x^{(k+1)} - \vec{x}^{(k)}\| &lt; tol,
+  \| \vec{x}^{(k+1)} - \vec{x}^{(k)}\| &lt; tol,
   \]</span></p></li>
 <li><p>The <em>norm of the residual</em> is small enough:</p></li>
 </ul>
 <p><span class="math display">\[
-\| \vec{r} \| = \| \vec{b} - A \vec{x}^{(k)} \| &lt; tol
+\| \vec{r}^{(k)} \| = \| \vec{b} - A \vec{x}^{(k)} \| &lt; tol
 \]</span></p>
 <p>In the second and third cases, we call <span class="math inline">\(tol\)</span> the <strong>convergence tolerance</strong> and the choice of <span class="math inline">\(tol\)</span> controls the accuracy of the solution.</p>
+<div id="rem-error-vs-residual" class="proof remark">
+<p><span class="proof-title"><em>Remark 5.2</em>. </span>We note that the residual <span class="math inline">\(\vec{r}^{(k)}\)</span> is different to the error <span class="math inline">\(\vec{x} - \vec{x}^{(k)}\)</span>. The error cannot be computed in general since it requires knowledge of the exact solution <span class="math inline">\(\vec{x}\)</span>. The residual can be computed and is therefore often used to monitor convergence.</p>
+<p>The two are related as using the fact that the residual at the exact solution is <span class="math inline">\(\vec{0}\)</span>: <span class="math display">\[
+\vec{r}^{(k)} = \vec{b} - A \vec{x}^{(k)} = \vec{b} - A \vec{x}^{(k)} - (\vec{b} - A \vec{x}) = A (\vec{x} - \vec{x}^{(k)}).
+\]</span> Therefore, the exact relation between the error and residual depends on the properties of <span class="math inline">\(A\)</span>.</p>
+</div>
 <div id="exr-stopping-discussion" class="theorem exercise">
-<p><span class="theorem-title"><strong>Exercise 5.2 (Discussion)</strong></span> What is a good convergence tolerance?</p>
+<p><span class="theorem-title"><strong>Exercise 5.3 (Discussion)</strong></span> What is a good convergence tolerance?</p>
 </div>
 <p>In general there are two possible reasons that an iteration may fail to converge.</p>
 <ul>
@@ -1309,7 +1310,7 @@ after iter=4: x.T = [  0.87982,  0.73779,  0.36688,  0.36332 ]
 <section id="summary" class="level2" data-number="5.7">
 <h2 data-number="5.7" class="anchored" data-anchor-id="summary"><span class="header-section-number">5.7</span> Summary</h2>
 <p>Many complex computational problems simply cannot be solved with today’s computers using direct methods. Iterative methods are used instead since they can massively reduce the computational cost and storage required to get a “good enough” solution.</p>
-<p>These basic iterative methods are simple to describe and program but generally slow to converge to an accurate answer - typically <span class="math inline">\(O(n)\)</span> iterations are required! Their usefulness for general matrix systems is very limited therefore - but we have shown their value in the solution of sparse systems however.</p>
+<p>These basic iterative methods are simple to describe and program but generally slow to converge to an accurate answer - typically <span class="math inline">\(O(n)\)</span> iterations are required! Their usefulness for general dense matrix systems is very limited. However, for sparse systems, they can offer dramatic reductions in both storage requirements and computational cost.</p>
 <p>More advanced iterative methods do exist but are beyond the scope of this module - see Final year projects, MSc projects, PhD, and beyond!</p>
 </section>
 <section id="further-reading" class="level2" data-number="5.8">
