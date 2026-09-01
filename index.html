@@ -1,0 +1,1224 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.10.18">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Thomas Ranner">
+<meta name="dcterms.date" content="2026-09-01">
+
+<title>COMP2870 Theoretical Foundations: Linear Algebra</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./src/lec02.html" rel="next">
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-64a204ab8560d761af7679ceaba22944.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-dark-b85bc7c33db8c58e0ec93c3465666fed.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-64a204ab8560d761af7679ceaba22944.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-a8878b26a82a3acfb551e36b2a05926d.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-dark-b4c4def0ec3a69273d171d94c37b6dce.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="site_libs/bootstrap/bootstrap-a8878b26a82a3acfb551e36b2a05926d.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<script>
+  MathJax = {
+    tex: {
+      tags: 'ams'  // should be 'ams', 'none', or 'all'
+    }
+  };
+</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+</head>
+
+<body class="nav-sidebar floating quarto-light"><script id="quarto-html-before-body" type="application/javascript">
+    const toggleBodyColorMode = (bsSheetEl) => {
+      const mode = bsSheetEl.getAttribute("data-mode");
+      const bodyEl = window.document.querySelector("body");
+      if (mode === "dark") {
+        bodyEl.classList.add("quarto-dark");
+        bodyEl.classList.remove("quarto-light");
+      } else {
+        bodyEl.classList.add("quarto-light");
+        bodyEl.classList.remove("quarto-dark");
+      }
+    }
+    const toggleBodyColorPrimary = () => {
+      const bsSheetEl = window.document.querySelector("link#quarto-bootstrap:not([rel=disabled-stylesheet])");
+      if (bsSheetEl) {
+        toggleBodyColorMode(bsSheetEl);
+      }
+    }
+    const setColorSchemeToggle = (alternate) => {
+      const toggles = window.document.querySelectorAll('.quarto-color-scheme-toggle');
+      for (let i=0; i < toggles.length; i++) {
+        const toggle = toggles[i];
+        if (toggle) {
+          if (alternate) {
+            toggle.classList.add("alternate");
+          } else {
+            toggle.classList.remove("alternate");
+          }
+        }
+      }
+    };
+    const toggleColorMode = (alternate) => {
+      // Switch the stylesheets
+      const primaryStylesheets = window.document.querySelectorAll('link.quarto-color-scheme:not(.quarto-color-alternate)');
+      const alternateStylesheets = window.document.querySelectorAll('link.quarto-color-scheme.quarto-color-alternate');
+      manageTransitions('#quarto-margin-sidebar .nav-link', false);
+      if (alternate) {
+        // note: dark is layered on light, we don't disable primary!
+        enableStylesheet(alternateStylesheets);
+        for (const sheetNode of alternateStylesheets) {
+          if (sheetNode.id === "quarto-bootstrap") {
+            toggleBodyColorMode(sheetNode);
+          }
+        }
+      } else {
+        disableStylesheet(alternateStylesheets);
+        enableStylesheet(primaryStylesheets)
+        toggleBodyColorPrimary();
+      }
+      manageTransitions('#quarto-margin-sidebar .nav-link', true);
+      // Switch the toggles
+      setColorSchemeToggle(alternate)
+      // Hack to workaround the fact that safari doesn't
+      // properly recolor the scrollbar when toggling (#1455)
+      if (navigator.userAgent.indexOf('Safari') > 0 && navigator.userAgent.indexOf('Chrome') == -1) {
+        manageTransitions("body", false);
+        window.scrollTo(0, 1);
+        setTimeout(() => {
+          window.scrollTo(0, 0);
+          manageTransitions("body", true);
+        }, 40);
+      }
+    }
+    const disableStylesheet = (stylesheets) => {
+      for (let i=0; i < stylesheets.length; i++) {
+        const stylesheet = stylesheets[i];
+        stylesheet.rel = 'disabled-stylesheet';
+      }
+    }
+    const enableStylesheet = (stylesheets) => {
+      for (let i=0; i < stylesheets.length; i++) {
+        const stylesheet = stylesheets[i];
+        if(stylesheet.rel !== 'stylesheet') { // for Chrome, which will still FOUC without this check
+          stylesheet.rel = 'stylesheet';
+        }
+      }
+    }
+    const manageTransitions = (selector, allowTransitions) => {
+      const els = window.document.querySelectorAll(selector);
+      for (let i=0; i < els.length; i++) {
+        const el = els[i];
+        if (allowTransitions) {
+          el.classList.remove('notransition');
+        } else {
+          el.classList.add('notransition');
+        }
+      }
+    }
+    const isFileUrl = () => {
+      return window.location.protocol === 'file:';
+    }
+    const hasAlternateSentinel = () => {
+      let styleSentinel = getColorSchemeSentinel();
+      if (styleSentinel !== null) {
+        return styleSentinel === "alternate";
+      } else {
+        return false;
+      }
+    }
+    const setStyleSentinel = (alternate) => {
+      const value = alternate ? "alternate" : "default";
+      if (!isFileUrl()) {
+        window.localStorage.setItem("quarto-color-scheme", value);
+      } else {
+        localAlternateSentinel = value;
+      }
+    }
+    const getColorSchemeSentinel = () => {
+      if (!isFileUrl()) {
+        const storageValue = window.localStorage.getItem("quarto-color-scheme");
+        return storageValue != null ? storageValue : localAlternateSentinel;
+      } else {
+        return localAlternateSentinel;
+      }
+    }
+    const toggleGiscusIfUsed = (isAlternate, darkModeDefault) => {
+      const baseTheme = document.querySelector('#giscus-base-theme')?.value ?? 'light';
+      const alternateTheme = document.querySelector('#giscus-alt-theme')?.value ?? 'dark';
+      let newTheme = '';
+      if(authorPrefersDark) {
+        newTheme = isAlternate ? baseTheme : alternateTheme;
+      } else {
+        newTheme = isAlternate ? alternateTheme : baseTheme;
+      }
+      const changeGiscusTheme = () => {
+        // From: https://github.com/giscus/giscus/issues/336
+        const sendMessage = (message) => {
+          const iframe = document.querySelector('iframe.giscus-frame');
+          if (!iframe) return;
+          iframe.contentWindow.postMessage({ giscus: message }, 'https://giscus.app');
+        }
+        sendMessage({
+          setConfig: {
+            theme: newTheme
+          }
+        });
+      }
+      const isGiscussLoaded = window.document.querySelector('iframe.giscus-frame') !== null;
+      if (isGiscussLoaded) {
+        changeGiscusTheme();
+      }
+    };
+    const authorPrefersDark = false;
+    const queryPrefersDark = window.matchMedia('(prefers-color-scheme: dark)');
+    const darkModeDefault = queryPrefersDark.matches;
+      document.querySelector('link#quarto-text-highlighting-styles.quarto-color-scheme-extra').rel = 'disabled-stylesheet';
+      document.querySelector('link#quarto-bootstrap.quarto-color-scheme-extra').rel = 'disabled-stylesheet';
+    let localAlternateSentinel = darkModeDefault ? 'alternate' : 'default';
+    // Dark / light mode switch
+    window.quartoToggleColorScheme = () => {
+      // Read the current dark / light value
+      let toAlternate = !hasAlternateSentinel();
+      toggleColorMode(toAlternate);
+      setStyleSentinel(toAlternate);
+      toggleGiscusIfUsed(toAlternate, darkModeDefault);
+      window.dispatchEvent(new Event('resize'));
+    };
+    queryPrefersDark.addEventListener("change", e => {
+      if(window.localStorage.getItem("quarto-color-scheme") !== null)
+        return;
+      const alternate = e.matches
+      toggleColorMode(alternate);
+      localAlternateSentinel = e.matches ? 'alternate' : 'default'; // this is used alongside local storage!
+      toggleGiscusIfUsed(alternate, darkModeDefault);
+    });
+    // Switch to dark mode if need be
+    if (hasAlternateSentinel()) {
+      toggleColorMode(true);
+    } else {
+      toggleColorMode(false);
+    }
+  </script>
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./index.html"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Introduction</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">COMP2870 Theoretical Foundations: Linear Algebra</a> 
+        <div class="sidebar-tools-main tools-wide">
+    <a href="https://github.com/COMP2870-2526/linear-algebra-notes" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-github"></i></a>
+    <a href="./COMP2870-Theoretical-Foundations--Linear-Algebra.pdf" title="Download PDF" class="quarto-navigation-tool px-1" aria-label="Download PDF"><i class="bi bi-file-pdf"></i></a>
+  <a href="" class="quarto-color-scheme-toggle quarto-navigation-tool  px-1" onclick="window.quartoToggleColorScheme(); return false;" title="Toggle dark mode"><i class="bi"></i></a>
+</div>
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Introduction</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./src/lec02.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Floating point number systems</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./src/lec03.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Introduction to systems of linear equations</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./src/lec04.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Direct solvers for systems of linear equations</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./src/lec05.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Iterative solutions of linear equations</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./src/lec06.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Complex numbers</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./src/lec07.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Eigenvectors and eigenvalues</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./src/lec08.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Eigenvectors and eigenvalues: practical solutions</span></span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction"><span class="header-section-number">1</span> Introduction</a>
+  <ul class="collapse">
+  <li><a href="#contents-of-this-submodule" id="toc-contents-of-this-submodule" class="nav-link" data-scroll-target="#contents-of-this-submodule"><span class="header-section-number">1.1</span> Contents of this submodule</a>
+  <ul class="collapse">
+  <li><a href="#topics" id="toc-topics" class="nav-link" data-scroll-target="#topics"><span class="header-section-number">1.1.1</span> Topics</a></li>
+  <li><a href="#learning-outcomes" id="toc-learning-outcomes" class="nav-link" data-scroll-target="#learning-outcomes"><span class="header-section-number">1.1.2</span> Learning outcomes</a></li>
+  </ul></li>
+  <li><a href="#textbooks-and-other-resources" id="toc-textbooks-and-other-resources" class="nav-link" data-scroll-target="#textbooks-and-other-resources"><span class="header-section-number">1.2</span> Textbooks and other resources</a></li>
+  <li><a href="#programming" id="toc-programming" class="nav-link" data-scroll-target="#programming"><span class="header-section-number">1.3</span> Programming</a></li>
+  <li><a href="#the-big-problems-in-linear-algebra" id="toc-the-big-problems-in-linear-algebra" class="nav-link" data-scroll-target="#the-big-problems-in-linear-algebra"><span class="header-section-number">1.4</span> The big problems in linear algebra</a>
+  <ul class="collapse">
+  <li><a href="#reminder-of-matrices-and-vectors" id="toc-reminder-of-matrices-and-vectors" class="nav-link" data-scroll-target="#reminder-of-matrices-and-vectors"><span class="header-section-number">1.4.1</span> Reminder of matrices and vectors</a></li>
+  <li><a href="#systems-of-linear-equations" id="toc-systems-of-linear-equations" class="nav-link" data-scroll-target="#systems-of-linear-equations"><span class="header-section-number">1.4.2</span> Systems of linear equations</a></li>
+  <li><a href="#eigenvalues-and-eigenvectors" id="toc-eigenvalues-and-eigenvectors" class="nav-link" data-scroll-target="#eigenvalues-and-eigenvectors"><span class="header-section-number">1.4.3</span> Eigenvalues and eigenvectors</a></li>
+  </ul></li>
+  <li><a href="#comments-on-these-notes" id="toc-comments-on-these-notes" class="nav-link" data-scroll-target="#comments-on-these-notes"><span class="header-section-number">1.5</span> Comments on these notes</a></li>
+  </ul></li>
+  </ul>
+<div class="toc-actions"><ul><li><a href="https://github.com/COMP2870-2526/linear-algebra-notes/edit/main/index.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/COMP2870-2526/linear-algebra-notes/blob/main/index.qmd" class="toc-action"><i class="bi empty"></i>View source</a></li><li><a href="https://github.com/COMP2870-2526/linear-algebra-notes/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">COMP2870 Theoretical Foundations: Linear Algebra</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Thomas Ranner </p>
+          </div>
+  </div>
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">1 September 2026</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="introduction" class="level1" data-number="1">
+<h1 data-number="1"><span class="header-section-number">1</span> Introduction</h1>
+<section id="contents-of-this-submodule" class="level2" data-number="1.1">
+<h2 data-number="1.1" class="anchored" data-anchor-id="contents-of-this-submodule"><span class="header-section-number">1.1</span> Contents of this submodule</h2>
+<p>This part of the module will deal with numerical algorithms that involve matrices. The study of this type of problem is called <em>linear algebra</em>. We will approach these problems using a combination of theoretical ideas and practical solutions, thinking through the lens of real-world applications. As a consequence, to succeed in linear algebra, you will do some programming (using Python) and some pen-and-paper theoretical work, too.</p>
+<section id="topics" class="level3" data-number="1.1.1">
+<h3 data-number="1.1.1" class="anchored" data-anchor-id="topics"><span class="header-section-number">1.1.1</span> Topics</h3>
+<p>We will have seven double lectures, three tutorials, and four labs. We break up the topics as follows:</p>
+<p>Lectures</p>
+<ol type="1">
+<li>Introduction and motivation, key problem statements (Week 4, Mon)</li>
+<li>When can we solve systems of linear equations? (Week 4, Wed)</li>
+<li>Direct methods for systems of linear equations (Week 5, Mon)</li>
+<li>Iterative solution of linear equations (Week 5, Wed)</li>
+<li>Complex numbers (Week 6, Mon)</li>
+<li>Eigenvalues and eigenvectors (Week 6, Wed)</li>
+<li>Practical solutions for eigenvalues and eigenvectors / Summary (Week 7, Mon)</li>
+</ol>
+<p>Labs</p>
+<ol type="1">
+<li>Floating point numbers (Week 4)</li>
+<li>When can we solve systems of linear equations? (Week 5)</li>
+<li>Systems of linear equations (Week 6)</li>
+<li>Eigenvalues and eigenvectors (Week 7)</li>
+</ol>
+<p>Tutorials</p>
+<ol type="1">
+<li>Linear independence, span, basis (Week 5)</li>
+<li>Solution of linear systems (Week 6)</li>
+<li>Eigenvalue and eigenvectors (Week 7)</li>
+</ol>
+<p>Later this term, week 10, you will complete a project based on the things you’ve learnt from this section of the module.</p>
+</section>
+<section id="learning-outcomes" class="level3" data-number="1.1.2">
+<h3 data-number="1.1.2" class="anchored" data-anchor-id="learning-outcomes"><span class="header-section-number">1.1.2</span> Learning outcomes</h3>
+<p>Candidates should be able to:</p>
+<p>TODO - these need updating vastly!</p>
+<ul>
+<li>explain practical challenges working with floating-point numbers;</li>
+<li>define and identify what it means for a set of vectors to be a basis, spanning set or linearly independent;</li>
+<li>apply direct and iterative solvers to solve systems of linear equations; implement methods using floating point numbers and investigate computational cost using computer experiments;</li>
+<li>apply algorithms to compute eigenvectors and eigenvalues of large matrices.</li>
+</ul>
+</section>
+</section>
+<section id="textbooks-and-other-resources" class="level2" data-number="1.2">
+<h2 data-number="1.2" class="anchored" data-anchor-id="textbooks-and-other-resources"><span class="header-section-number">1.2</span> Textbooks and other resources</h2>
+<p>There are many textbooks and other external resources which could help your learning:</p>
+<ul>
+<li><p><a href="https://leeds.primo.exlibrisgroup.com/permalink/44LEE_INST/13rlbcs/alma991011421399705181">Introduction to Linear Algebra</a> (Fifth Edition), Gilbert Strang, Wellesley-Cambridge Press, 2016. &nbsp;with <a href="https://web.mit.edu/18.06/www">MIT course material</a>. <em>Strongly recommended book and YouTube lecture series</em></p></li>
+<li><p><a href="https://leeds.primo.exlibrisgroup.com/permalink/44LEE_INST/13rlbcs/alma991009203099705181">Scientific Computing: An Introductory Survey</a>, T.M. Heath, McGraw-Hill, 2002. &nbsp;Some <a href="http://heath.cs.illinois.edu/scicomp/notes/index.html">lecture notes based on the book</a></p></li>
+<li><p><a href="https://leeds.primo.exlibrisgroup.com/permalink/44LEE_INST/13rlbcs/alma991019677711205181">Engineering Mathematics</a>, K.A. Stroud, Macmillan, 2001. <em>available online</em></p></li>
+<li><p><a href="https://leeds.primo.exlibrisgroup.com/permalink/44LEE_INST/13rlbcs/alma991010465229705181">Numerical Recipes in C++/C/FORTRAN</a>: The Art of Scientific Computing, W.H. Press, S.A. Teukolsky, W.T. Vetterling and B.P. Flannery, Cambridge University Press, 2002/1993/1993. <em>A very practical view of the methods we develop in this module which could be used for library development</em></p></li>
+</ul>
+</section>
+<section id="programming" class="level2" data-number="1.3">
+<h2 data-number="1.3" class="anchored" data-anchor-id="programming"><span class="header-section-number">1.3</span> Programming</h2>
+<p>This section of the notes links theoretical material with practical applications. We will have weekly lab sessions where you will see how the methods mentioned in the lecture notes work when implemented. More instructions on how we will do this will be covered in the lab sessions themselves.</p>
+<p>An important theoretical aspect of translating the algorithms in linear algebra to computer implementations is the use of floating-point numbers. You will have already met floating-point numbers in your first year studies where you met how computer store numbers. You will already know that computer cannot store every possible real number exactly. The inexactness of floating-point numbers has real consequences when performing linear algebra computations.</p>
+<p>Exploring and understanding the material in (<a href="src/lec02.html" class="quarto-xref"><span>Chapter 2</span></a>) is really helpful for understanding many of the choices that we make when forming methods in linear algebra.</p>
+<p>We will make extensive use of <a href="https://www.python.org/"><code>Python</code></a> and <a href="https://numpy.org/"><code>numpy</code></a> during this section of the module. It may help you to revise some of your notes from last year on these topics.</p>
+</section>
+<section id="the-big-problems-in-linear-algebra" class="level2" data-number="1.4">
+<h2 data-number="1.4" class="anchored" data-anchor-id="the-big-problems-in-linear-algebra"><span class="header-section-number">1.4</span> The big problems in linear algebra</h2>
+<p>We will cover two big linear algebra problems in this section of the module. Linear algebra can be defined as the study of problems involving matrices and vectors.</p>
+<section id="reminder-of-matrices-and-vectors" class="level3" data-number="1.4.1">
+<h3 data-number="1.4.1" class="anchored" data-anchor-id="reminder-of-matrices-and-vectors"><span class="header-section-number">1.4.1</span> Reminder of matrices and vectors</h3>
+<p>There are two important objects we will work with that were defined in your first-year Theoretical Foundations module (COMP1870).</p>
+<div id="def-matrix" class="theorem definition">
+<p><span class="theorem-title"><strong>Definition 1.1</strong></span> A <em>matrix</em> is a rectangular array of numbers called <em>entries</em> or <em>elements</em> of the matrix. A matrix with <span class="math inline">\(m\)</span> rows and <span class="math inline">\(n\)</span> columns is called an <span class="math inline">\(m \times n\)</span> matrix or <span class="math inline">\(m\)</span>-by-<span class="math inline">\(n\)</span> matrix. We may additionally say that the matrix is of order <span class="math inline">\(m \times n\)</span>. If <span class="math inline">\(m = n\)</span>, then we say that the matrix is <em>square</em>.</p>
+</div>
+<div id="exm-matrix" class="theorem example">
+<p><span class="theorem-title"><strong>Example 1.1</strong></span> <span class="math inline">\(A, B\)</span> and <span class="math inline">\(C\)</span> are <span class="math inline">\(3 \times 4\)</span> matrices : <span class="math display">\[\begin{align*}
+A = \begin{pmatrix} 10 &amp; 1 &amp; 0 &amp; 9 \\ 12.4 &amp; 6 &amp; 1 &amp; 0 \\ 1 &amp;
+3.14 &amp; 1 &amp; 0 \end{pmatrix}
+\quad
+B = \begin{pmatrix} 0 &amp; 6 &amp; 3 &amp; 1 \\ 1 &amp; 4 &amp; 1
+&amp; 0 \\ 7 &amp; 0 &amp; 10 &amp; 20 \end{pmatrix} \quad C = \begin{pmatrix} 4 &amp; 1 &amp; 8 &amp; -1 \\
+1.5 &amp; 1 &amp; 3 &amp; 4 \\ 6 &amp; -4 &amp; 2 &amp; 8 \end{pmatrix}
+\end{align*}\]</span></p>
+<div id="exr-matrix" class="theorem exercise">
+<p><span class="theorem-title"><strong>Exercise 1.1</strong></span> &nbsp;</p>
+<ol type="1">
+<li>Compute, if defined, <span class="math inline">\(A + B\)</span>, <span class="math inline">\(B + C\)</span>.</li>
+<li>Compute, if defined, <span class="math inline">\(A B\)</span>, <span class="math inline">\(B A\)</span>, <span class="math inline">\(B C\)</span> (here, by writing matrices next to each other we mean the matrix product).</li>
+</ol>
+</div>
+</div>
+<p>When considering systems of linear equations, the entries of the matrix will always be real numbers (later we will explore using complex numbers (<a href="src/lec06.html" class="quarto-xref"><span>Chapter 6</span></a>) too)</p>
+<div id="def-vector" class="theorem definition">
+<p><span class="theorem-title"><strong>Definition 1.2</strong></span> A <em>column vector</em>, often just called a <em>vector</em>, is a matrix with a single column. A matrix with a single row is a <em>row vector</em>. The entries of a vector are called <em>components</em>. A vector with <span class="math inline">\(n\)</span> rows is called an <span class="math inline">\(n\)</span>-vector.</p>
+</div>
+<div id="exm-vector" class="theorem example">
+<p><span class="theorem-title"><strong>Example 1.2</strong></span> <span class="math inline">\(\vec{a}\)</span> is a row vector, <span class="math inline">\(\vec{b}\)</span> and <span class="math inline">\(\vec{c}\)</span> are (column) vectors. <span class="math display">\[\begin{align*}
+\vec{a} =
+\begin{pmatrix} 0 &amp; 1 &amp; 7 \end{pmatrix}
+\quad
+\vec{b} =
+\begin{pmatrix} 0 \\ 1 \\ 3.1 \\ 7 \end{pmatrix}
+\quad
+\vec{c} = \begin{pmatrix} 4 \\ 6 \\ -4 \\ 0 \end{pmatrix}.
+\end{align*}\]</span></p>
+<div id="exr-vector" class="theorem exercise">
+<p><span class="theorem-title"><strong>Exercise 1.2</strong></span> &nbsp;</p>
+<ol type="1">
+<li>Compute, if defined, <span class="math inline">\(\vec{b} + \vec{c}\)</span>, <span class="math inline">\(0.25 \vec{c}\)</span>.</li>
+<li>What is the meaning of <span class="math inline">\(\vec{b}^T \vec{c}\)</span>? (Here, we are interpreting the vectors as matrices).</li>
+<li>Compute, if defined, <span class="math inline">\(B \vec{b}\)</span>.</li>
+</ol>
+</div>
+</div>
+<div id="exm-special-matrices" class="theorem example">
+<p><span class="theorem-title"><strong>Example 1.3 (Some special matrices)</strong></span> It will be helpful to remember some special matrices during this seciton of the module.</p>
+<p>A <strong>rotation matrix</strong> is a <span class="math inline">\(2 \times 2\)</span> matrix given by <span class="math display">\[\begin{equation}
+R(\theta) = \begin{pmatrix}
+\cos \theta &amp; -\sin \theta \\
+\sin \theta &amp; \cos \theta
+\end{pmatrix}.
+\end{equation}\]</span> This matrix describes an anti-clockwise rotation by <span class="math inline">\(\theta\)</span> (in radians).</p>
+<p>The <strong>projection operator</strong> maps vectors onto either lines or planes which pass through the origin (<span class="math inline">\(\vec{0}\)</span>).</p>
+<ul>
+<li><p>For projection onto a line <span class="math inline">\(L = \{ \lambda \vec{a} : \lambda \in \mathbb{R} \}\)</span>, with <span class="math inline">\(\| \vec{a} \| = 1\)</span> (i.e.&nbsp;mangnitude 1), we can write this transformation as: <span class="math display">\[\begin{equation*}
+\vec{x} \mapsto \vec{a} \cdot \vec{x} \vec{a}
+= (\vec{a} \otimes \vec{a}) \vec{x},
+\end{equation*}\]</span> where <span class="math inline">\(\otimes\)</span> is the <em>outer product</em>. For two <span class="math inline">\(n\)</span>-vectors <span class="math inline">\(\vec{a}\)</span> and <span class="math inline">\(\vec{b}\)</span>, <span class="math inline">\(\vec{a} \otimes \vec{b}\)</span> is an <span class="math inline">\(n \times n\)</span> with entries: <span class="math display">\[\begin{equation*}
+(\vec{a} \otimes \vec{b})_{ij} = a_i b_j.
+\end{equation*}\]</span></p></li>
+<li><p>TODO FIXME For projection onto a plane <span class="math inline">\(\Pi = \{ \lambda \vec{a} + \mu \vec{b} : \lambda,
+\mu \in \mathbb{R} \}\)</span>, we can write the projection operator as: <span class="math display">\[\begin{equation*}
+\vec{x} \mapsto (\vec{a} \otimes \vec{a} + \vec{b} \otimes \vec{b}) \vec{x}.
+\end{equation*}\]</span></p></li>
+</ul>
+</div>
+</section>
+<section id="systems-of-linear-equations" class="level3" data-number="1.4.2">
+<h3 data-number="1.4.2" class="anchored" data-anchor-id="systems-of-linear-equations"><span class="header-section-number">1.4.2</span> Systems of linear equations</h3>
+<p>Given an <span class="math inline">\(n \times n\)</span> matrix <span class="math inline">\(A\)</span> and an <span class="math inline">\(n\)</span>-vector <span class="math inline">\(\vec{b}\)</span>, find the <span class="math inline">\(n\)</span>-vector <span class="math inline">\(\vec{x}\)</span> which satisfies: <span class="math display">\[\begin{equation}
+\label{eq:sle}
+A \vec{x} = \vec{b}.
+\end{equation}\]</span></p>
+<p>We can also write <span class="math inline">\(\eqref{eq:sle}\)</span> as a system of linear equations: <span class="math display">\[\begin{align*}
+\text{Equation 1:} &amp;&amp;
+a_{11} x_1 + a_{12} x_2 + a_{13} x_3 + \cdots + a_{1n} x_n &amp; = b_1 \\
+\text{Equation 2:} &amp;&amp;
+a_{21} x_1 + a_{22} x_2 + a_{23} x_3 + \cdots + a_{2n} x_n &amp; = b_2 \\
+\vdots \\
+\text{Equation i:} &amp;&amp;
+a_{i1} x_1 + a_{i2} x_2 + a_{i3} x_3 + \cdots + a_{in} x_n &amp; = b_i \\
+\vdots \\
+\text{Equation n:} &amp;&amp;
+a_{n1} x_1 + a_{n2} x_2 + a_{n3} x_3 + \cdots + a_{nn} x_n &amp; = b_n.
+\end{align*}\]</span></p>
+<p><strong>Notes</strong>:</p>
+<ul>
+<li><p>The values <span class="math inline">\(a_{ij}\)</span> are known as <strong>coefficients</strong>.</p></li>
+<li><p>The <strong>right hand side</strong> values <span class="math inline">\(b_i\)</span> are known and are given to you as part of the problem.</p></li>
+<li><p><span class="math inline">\(x_1, x_2, x_3, \ldots, x_n\)</span> are <strong>not</strong> known and are what you need to find to solve the problem.</p></li>
+</ul>
+<p>Many computational algorithms require the solution of linear equations, e.g.&nbsp;in fields such as</p>
+<ul>
+<li>Scientific computation;</li>
+<li>Network design and optimisation;</li>
+<li>Graphics and visualisation;</li>
+<li>Machine learning.</li>
+</ul>
+<p>Typically, these systems are <em>very</em> large (<span class="math inline">\(n \approx 10^9\)</span>).</p>
+<p>It is therefore important that this problem can be solved</p>
+<ul>
+<li>accurately: we are allowed to make small errors but not big errors;</li>
+<li>efficiently: we need to find the answer quickly;</li>
+<li>reliably: we need to know that our algorithm will give us an answer that we are happy with.</li>
+</ul>
+<div id="exm-temperature" class="theorem example">
+<p><span class="theorem-title"><strong>Example 1.4 (Temperature in a sealed room)</strong></span> Suppose we wish to estimate the temperature distribution inside an object:</p>
+<div id="13611283" class="cell" data-execution_count="2">
+<div class="cell-output cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="index_files/figure-html/cell-3-output-1.png" width="665" height="332" class="figure-img"></p>
+<figcaption>Image showing temperature sample points and relations in a room.</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>We can place a network of points inside the object and use the following model: the temperature at each interior point is the average of its neighbours.</p>
+<p>This example leads to the system:</p>
+<p><span class="math display">\[
+\begin{pmatrix}
+1 &amp; -1/6 &amp; -1/6 &amp; 0 &amp; -1/6 &amp; 0 &amp; 0 \\
+-1/6 &amp; 1 &amp; -1/6 &amp; -1/6 &amp; 0 &amp; -1/6 &amp; 0 \\
+-1/4 &amp; -1/4 &amp; 1 &amp; 0 &amp; -1/4 &amp; -1/4 &amp; 0 \\
+0 &amp; -1/5 &amp; 0 &amp; 1 &amp; 0 &amp; -1/5 &amp; 0 \\
+-1/6 &amp; 0 &amp; -1/6 &amp; 0 &amp; 1 &amp; -1/6 &amp; -1/6 \\
+0 &amp; -1/8 &amp; -1/8 &amp; -1/8 &amp; -1/8 &amp; 1 &amp; -1/8 \\
+0 &amp; 0 &amp; 0 &amp; 0 &amp; -1/5 &amp; -1/5 &amp; 1
+\end{pmatrix}
+\begin{pmatrix}
+x_1 \\ x_2 \\ x_3 \\ x_4 \\ x_5 \\ x_6 \\ x_7
+\end{pmatrix}
+= \begin{pmatrix}
+400/6 \\ 100/6 \\ 0 \\ 0 \\ 100/6 \\ 0 \\ 0
+\end{pmatrix}.
+\]</span></p>
+</div>
+<div id="exm-traffic" class="theorem example">
+<p><span class="theorem-title"><strong>Example 1.5 (Traffic network)</strong></span> Suppose we wish to monitor the flow of traffic in a city centre:</p>
+<div id="3fd11fa0" class="cell" data-execution_count="3">
+<div class="cell-output cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="index_files/figure-html/cell-4-output-1.png" width="662" height="469" class="figure-img"></p>
+<figcaption>Example network showing traffic flow in a city</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>As the above example shows, it is not necessary to monitor every single road. If we know all of the <span class="math inline">\(y\)</span> values, we can calculate the <span class="math inline">\(x\)</span> values!</p>
+<p>This example leads to the system:</p>
+<p><span class="math display">\[
+\begin{pmatrix}
+1 &amp; 0 &amp; 1 &amp; 0 &amp; 0 &amp; 0 &amp; 0 &amp; 0 \\
+1 &amp; -1 &amp; 0 &amp; 0 &amp; 0 &amp; 0 &amp; 0 &amp; 0 \\
+0 &amp; 1 &amp; 0 &amp; -1 &amp; 0 &amp; 0 &amp; 0 &amp; 0 \\
+0 &amp; 0 &amp; 1 &amp; 0 &amp; 0 &amp; -1 &amp; 0 &amp; 0 \\
+0 &amp; 0 &amp; 0 &amp; 0 &amp; 1 &amp; 0 &amp; 1 &amp; 0 \\
+0 &amp; 0 &amp; 0 &amp; 1 &amp; 1 &amp; 0 &amp; 0 &amp; 0 \\
+0 &amp; 0 &amp; 0 &amp; 0 &amp; 0 &amp; 1 &amp; 0 &amp; -1 \\
+0 &amp; 0 &amp; 0 &amp; 0 &amp; 0 &amp; 0 &amp; 1 &amp; 1
+\end{pmatrix}
+\begin{pmatrix}
+x_1 \\ x_2 \\ x_3 \\ x_4 \\ x_5 \\ x_6 \\ x_7 \\ x_8
+\end{pmatrix}
+= \begin{pmatrix}
+y_5 \\ y_{12} - y_6 \\ y_8 - y_7 \\ y_{11} - y_4 \\
+y_{11} + y_{12} - y_{10} \\ y_9 \\ y_2 - y_3 \\ y_1
+\end{pmatrix}.
+\]</span></p>
+</div>
+</section>
+<section id="eigenvalues-and-eigenvectors" class="level3" data-number="1.4.3">
+<h3 data-number="1.4.3" class="anchored" data-anchor-id="eigenvalues-and-eigenvectors"><span class="header-section-number">1.4.3</span> Eigenvalues and eigenvectors</h3>
+<p>For this problem, we will think of a matrix <span class="math inline">\(A\)</span> acting on nonzero vectors <span class="math inline">\(\vec{x} \neq \vec{0}\)</span>: <span class="math display">\[\begin{equation*}
+\vec{x} \mapsto A \vec{x}.
+\end{equation*}\]</span> We are interested in when is the output vector <span class="math inline">\(A \vec{x}\)</span> is <em>parallel</em> to <span class="math inline">\(\vec{x}\)</span>?</p>
+<div id="def-evalues" class="theorem definition">
+<p><span class="theorem-title"><strong>Definition 1.3</strong></span> We say that any nonzero vector <span class="math inline">\(\vec{x}\)</span>, where <span class="math inline">\(A \vec{x}\)</span> is parallel is <span class="math inline">\(\vec{x}\)</span>, is called an <em>eigenvector</em> of <span class="math inline">\(A\)</span>. Here by parallel, we mean that there exists a number <span class="math inline">\(\lambda\)</span> (can be positive, negative or zero) such that <span class="math display">\[\begin{equation}
+\label{eq:evalues}
+A \vec{x} = \lambda \vec{x}.
+\end{equation}\]</span> We call the associated number <span class="math inline">\(\lambda\)</span> an <em>eigenvalue</em> of <span class="math inline">\(A\)</span>.</p>
+<p>We will later see that an <span class="math inline">\(n \times n\)</span> square matrix always has <span class="math inline">\(n\)</span> eigenvalues when counted with algebraic multiplicity. These eigenvalues need not be distinct.</p>
+</div>
+<p>To help with our intuition here, we start with some simple examples:</p>
+<div id="exm-unequal-scaling-evalues" class="theorem example">
+<p><span class="theorem-title"><strong>Example 1.6</strong></span> Let <span class="math inline">\(A\)</span> be the <span class="math inline">\(2 \times 2\)</span> matrix that scales any input vector by <span class="math inline">\(a\)</span> in the <span class="math inline">\(x\)</span>-direction and by <span class="math inline">\(b\)</span> in the <span class="math inline">\(y\)</span>-direction. We can write this matrix as <span class="math display">\[\begin{equation*}
+A = \begin{pmatrix}
+a &amp; 0 \\ 0 &amp; b
+\end{pmatrix},
+\end{equation*}\]</span> since then for a 2-vector <span class="math inline">\(\vec{x} = (x, y)^T\)</span>, we have <span class="math display">\[\begin{equation*}
+A \vec{x}
+= \begin{pmatrix}
+a &amp; 0 \\ 0 &amp; b
+\end{pmatrix}
+\begin{pmatrix} x \\ y \end{pmatrix}
+= \begin{pmatrix} a x + 0 y \\ 0 x + b y \end{pmatrix}
+= \begin{pmatrix} a x \\ b y \end{pmatrix}.
+\end{equation*}\]</span></p>
+<p>Then, we infer we have two eigenvalues and two eigenvectors: One eigenvalue is <span class="math inline">\(a\)</span> with eigenvector <span class="math inline">\((1, 0)^T\)</span> and the other is <span class="math inline">\(b\)</span> with eigenvector <span class="math inline">\((0, 1)^T\)</span> since: <span class="math display">\[\begin{align*}
+\begin{pmatrix}
+a &amp; 0 \\ 0 &amp; b
+\end{pmatrix}
+\begin{pmatrix} 1 \\ 0 \end{pmatrix}
+&amp; = \begin{pmatrix} a \\ 0 \end{pmatrix}
+= a \begin{pmatrix} 1 \\ 0 \end{pmatrix} \\
+\begin{pmatrix}
+a &amp; 0 \\ 0 &amp; b
+\end{pmatrix}
+\begin{pmatrix} 0 \\ 1 \end{pmatrix}
+&amp; = \begin{pmatrix} 0 \\ b \end{pmatrix}
+= b \begin{pmatrix} 0 \\ 1 \end{pmatrix}.
+\end{align*}\]</span></p>
+</div>
+<div id="exm-projection" class="theorem example">
+<p><span class="theorem-title"><strong>Example 1.7</strong></span> Let <span class="math inline">\(P\)</span> be the 3x3 matrix that represents projection onto a plane <span class="math inline">\(\pi\)</span>. What are the eigenvalues and eigenvectors of <span class="math inline">\(p\)</span>?</p>
+<div id="9c926111" class="cell" data-execution_count="4">
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/cell-5-output-1.png" width="450" height="470" class="figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<ul>
+<li><p>If <span class="math inline">\(\vec{x}\)</span> is in the plane <span class="math inline">\(\Pi\)</span>, then <span class="math inline">\(P \vec{x} = \vec{x}\)</span>. This means that <span class="math inline">\(\vec{x}\)</span> is an eigenvector and the associated eigenvalue is <span class="math inline">\(1\)</span>.</p></li>
+<li><p>If <span class="math inline">\(\vec{y}\)</span> is perpendicular to the plane <span class="math inline">\(\Pi\)</span>, then <span class="math inline">\(P \vec{y} = \vec{0}\)</span>. This means that <span class="math inline">\(\vec{y}\)</span> is an eigenvector and the associated eigenvalue is <span class="math inline">\(0\)</span>.</p></li>
+</ul>
+<p>Let <span class="math inline">\(\vec{y}\)</span> be perpendicular to <span class="math inline">\(\Pi\)</span> (so that <span class="math inline">\(P \vec{y} = \vec{0}\)</span> and <span class="math inline">\(\vec{y}\)</span> is an eigenvector of <span class="math inline">\(P\)</span>), then for any number <span class="math inline">\(s\)</span>, we can compute <span class="math display">\[\begin{equation*}
+P (s \vec{y}) = s P \vec{y} = s \vec{0} = \vec{0}.
+\end{equation*}\]</span> This means that <span class="math inline">\(s \vec{y}\)</span> is also an eigenvector of <span class="math inline">\(P\)</span> associated to the eigenvalue <span class="math inline">\(0\)</span>. As a consequence, when we compute eigenvectors, we need to take care to <em>normalise</em> the vector to remove an arbitrary scaling. However, normalisation does not make an eigenvector completely unique: for example both <span class="math inline">\(\vec{x}\)</span> and <span class="math inline">\(-\vec{x}\)</span> may be both unit eigenvectors.</p>
+<p>We see we end up with a two-dimensional space of eigenvectors (i.e., the plane <span class="math inline">\(\Pi\)</span>) associated to eigenvalue <span class="math inline">\(1\)</span> and a one-dimensional space of eigenvectors (i.e., the line perpendicular to <span class="math inline">\(\Pi\)</span>) eigenvalue <span class="math inline">\(0\)</span>. We use the term <em>eigenspace</em> the space of eigenvectors associated to a particular eigenvalue.</p>
+</div>
+<div id="exm-permuatation" class="theorem example">
+<p><span class="theorem-title"><strong>Example 1.8</strong></span> Let <span class="math inline">\(A\)</span> be the permuatation matrix which takes an input two-vector and outputs a two-vector with the components swapped. The matrix is given by <span class="math display">\[\begin{equation*}
+A = \begin{pmatrix}
+0 &amp; 1 \\ 1 &amp; 0 \\
+\end{pmatrix}.
+\end{equation*}\]</span> What are the eigenvectors and eigenvalues of <span class="math inline">\(A\)</span>?</p>
+<ul>
+<li><p>Let <span class="math inline">\(\vec{x} = (1, 1)^T\)</span>, then swapping the components of <span class="math inline">\(\vec{x}\)</span> gives back the same vector <span class="math inline">\(\vec{x}\)</span>. In equations, we can write <span class="math inline">\(A \vec{x} = \vec{x}\)</span>. This means that <span class="math inline">\(\vec{x}\)</span> is an eigenvector and the eigenvalue is <span class="math inline">\(1\)</span>.</p></li>
+<li><p>Let <span class="math inline">\(\vec{x} = (-1, 1)^T\)</span>, then swapping the components of <span class="math inline">\(\vec{x}\)</span> gives back <span class="math inline">\((1, -1)^T\)</span>, which we can see is <span class="math inline">\(-\vec{x}\)</span>. In equations, we can write <span class="math inline">\(A
+\vec{x} = -\vec{x}\)</span>. This means that <span class="math inline">\(\vec{x}\)</span> is an eigenvector of <span class="math inline">\(A\)</span> and the associated eigenvalue is <span class="math inline">\(-1\)</span>.</p></li>
+</ul>
+<p>Here we see that again we actually have two one-dimensional eigenspaces.</p>
+</div>
+</section>
+</section>
+<section id="comments-on-these-notes" class="level2" data-number="1.5">
+<h2 data-number="1.5" class="anchored" data-anchor-id="comments-on-these-notes"><span class="header-section-number">1.5</span> Comments on these notes</h2>
+<p>There are two versions of these notes available: as an online website and as a pdf. I expect minor adjustments to be made to both throughout the progress of delivering the materials.</p>
+<p>You can always find the latest versions at:</p>
+<p>TODO update me</p>
+<ul>
+<li><a href="https://comp2870-2526.github.io/linear-algebra-notes/" class="uri">https://comp2870-2526.github.io/linear-algebra-notes/</a> (html version)</li>
+<li><a href="https://comp2870-2526.github.io/linear-algebra-notes/COMP2870-Theoretical-Foundations--Linear-Algebra.pdf" class="uri">https://comp2870-2526.github.io/linear-algebra-notes/COMP2870-Theoretical-Foundations--Linear-Algebra.pdf</a> (pdf version)</li>
+</ul>
+<p>Please either email me (<a href="mailto:T.Ranner@leeds.ac.uk">T.Ranner@leeds.ac.uk</a>) or use the <a href="https://github.com/COMP2870-2526/linear-algebra-notes">github repository</a> to report any corrections.</p>
+<div id="707a6114" class="cell" data-execution_count="5">
+<div class="cell-output cell-output-stdout">
+<pre><code>This version of the notes is 712ee22+dirty.</code></pre>
+</div>
+</div>
+<p>Copyright 2024-2026, Thomas Ranner and University of Leeds, licensed under <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a>.</p>
+
+
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    // Ensure there is a toggle, if there isn't float one in the top right
+    if (window.document.querySelector('.quarto-color-scheme-toggle') === null) {
+      const a = window.document.createElement('a');
+      a.classList.add('top-right');
+      a.classList.add('quarto-color-scheme-toggle');
+      a.href = "";
+      a.onclick = function() { try { window.quartoToggleColorScheme(); } catch {} return false; };
+      const i = window.document.createElement("i");
+      i.classList.add('bi');
+      a.appendChild(i);
+      window.document.body.appendChild(a);
+    }
+    setColorSchemeToggle(hasAlternateSentinel())
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/comp2870-2526\.github\.io\/linear-algebra-notes\/");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./src/lec02.html" class="pagination-link" aria-label="Floating point number systems">
+        <span class="nav-page-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Floating point number systems</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+      &nbsp;
+    </div>   
+    <div class="nav-footer-center">
+<p>Copyright 2024-2025, Thomas Ranner and University of Leeds, licensed under <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a> <img src="https://mirrors.creativecommons.org/presskit/icons/cc.svg" style="width:1em;height:1em"> <img src="https://mirrors.creativecommons.org/presskit/icons/by.svg" style="width:1em;height:1em">.</p>
+<div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/COMP2870-2526/linear-algebra-notes/edit/main/index.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/COMP2870-2526/linear-algebra-notes/blob/main/index.qmd" class="toc-action"><i class="bi empty"></i>View source</a></li><li><a href="https://github.com/COMP2870-2526/linear-algebra-notes/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div>
+    <div class="nav-footer-right">
+      &nbsp;
+    </div>
+  </div>
+</footer>
+
+
+
+
+</body></html>
