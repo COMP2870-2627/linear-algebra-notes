@@ -319,7 +319,7 @@ A \vec{x} = \lambda \vec{x}.
 <div id="exm-projection" class="theorem example">
 <p><span class="theorem-title"><strong>Example 7.1</strong></span> Let <span class="math inline">\(P\)</span> be the 3x3 matrix that represents projection onto a plane <span class="math inline">\(\Pi =
 \{\vec{x} \in \mathbb{R}^3 : \vec{a} \cdot \vec{x} = 0\}\)</span> (i.e.&nbsp;<span class="math inline">\(P\)</span> maps any point in <span class="math inline">\(\mathbb{R}^3\)</span> to its nearest point in <span class="math inline">\(\Pi\)</span>). What are the eigenvalues and eigenvectors of <span class="math inline">\(P\)</span>?</p>
-<div id="bab500b7" class="cell" data-caption="Representation of planar projection operator $P$." data-execution_count="2">
+<div id="eab8b81d" class="cell" data-caption="Representation of planar projection operator $P$." data-execution_count="2">
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
@@ -365,7 +365,7 @@ A = \begin{pmatrix}
 <p>Eigenvalues and eigenvectors can be used to encode information about a dataset into a lower dimensional representation. Take, for example, the health record of a patient which might contain many dimensions of data (e.g.&nbsp;height, weight, resting heart rate, different blood test results, diet and exercise information). This dataset will be hard to compute with because these columns are not independent (more on this later in the Statistics section of the module) and the large dimension makes computation expensive. One way to reduce the dimensionality is through projecting the dataset onto a small number of directions which come from the eigenvectors of a related matrix (the covariance or correlation matrix). This is called principal component analysis (PCA) and you will learn more about this in a project later in this module.</p>
 <p>We demonstrate briefly here how PCA can work for compressing an image. Consider this image of the Bragg building:</p>
 <p>Step 1: we load the image and do some normalisation:</p>
-<div id="73cc3261" class="cell" data-execution_count="3">
+<div id="95463afb" class="cell" data-execution_count="3">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1"></a>img <span class="op">=</span> Image.<span class="bu">open</span>(<span class="st">"images/bragg-building.jpg"</span>).convert(<span class="st">"L"</span>)</span>
 <span id="cb1-2"><a href="#cb1-2"></a>img <span class="op">=</span> img.resize((<span class="dv">300</span>, <span class="dv">300</span>))  <span class="co"># reduce size</span></span>
 <span id="cb1-3"><a href="#cb1-3"></a>img_array <span class="op">=</span> np.asarray(img, dtype<span class="op">=</span>np.float64) <span class="op">/</span> <span class="fl">255.0</span></span>
@@ -383,13 +383,13 @@ A = \begin{pmatrix}
 </div>
 </div>
 <p>Step 2: we compute the covariance matrix</p>
-<div id="e79b190e" class="cell" data-execution_count="4">
+<div id="75422533" class="cell" data-execution_count="4">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1"></a>mean_vector <span class="op">=</span> np.mean(img_array, axis<span class="op">=</span><span class="dv">0</span>)</span>
 <span id="cb2-2"><a href="#cb2-2"></a>centered_data <span class="op">=</span> img_array <span class="op">-</span> mean_vector</span>
 <span id="cb2-3"><a href="#cb2-3"></a>cov_matrix <span class="op">=</span> np.cov(centered_data, rowvar<span class="op">=</span><span class="va">False</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Step 3: compute eigenvalues and eigenvectors</p>
-<div id="23b733a7" class="cell" data-execution_count="5">
+<div id="356f17f2" class="cell" data-execution_count="5">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1"></a>eigenvalues, eigenvectors <span class="op">=</span> np.linalg.eig(cov_matrix)</span>
 <span id="cb3-2"><a href="#cb3-2"></a></span>
 <span id="cb3-3"><a href="#cb3-3"></a><span class="co"># Sort eigenvalues and eigenvectors in descending order</span></span>
@@ -398,7 +398,7 @@ A = \begin{pmatrix}
 <span id="cb3-6"><a href="#cb3-6"></a>eigenvectors <span class="op">=</span> eigenvectors[:, sorted_indices]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Step 4: reconstruct the image using the top k components</p>
-<div id="6b0d029b" class="cell" data-execution_count="6">
+<div id="2d99922b" class="cell" data-execution_count="6">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1"></a><span class="kw">def</span> reconstruct_image(data, eigenvectors, mean_vector, k):</span>
 <span id="cb4-2"><a href="#cb4-2"></a>    <span class="co">"""</span></span>
 <span id="cb4-3"><a href="#cb4-3"></a><span class="co">    Reconstructs the image using the top k eigenvectors.</span></span>
@@ -409,7 +409,7 @@ A = \begin{pmatrix}
 <span id="cb4-8"><a href="#cb4-8"></a>    <span class="cf">return</span> reconstructed</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Step 5: display the results for different numbers of eigenvectors:</p>
-<div id="4e4be78b" class="cell" data-execution_count="7">
+<div id="f25b9c82" class="cell" data-execution_count="7">
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1"></a>k_values <span class="op">=</span> [<span class="dv">5</span>, <span class="dv">20</span>, <span class="dv">50</span>]</span>
 <span id="cb5-2"><a href="#cb5-2"></a></span>
 <span id="cb5-3"><a href="#cb5-3"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">12</span>, <span class="dv">8</span>))</span>

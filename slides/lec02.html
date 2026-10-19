@@ -438,9 +438,7 @@ A^{-1} = \frac{1}{ad - bc} \begin{pmatrix} d &amp; - b \\ -c &amp; a \end{pmatri
 <p>Find the inverse of the matrix <span class="math inline">\(\begin{pmatrix} 3 &amp; 1 \\ 1 &amp; 3 \end{pmatrix}\)</span>.</p>
 
 <aside><div>
-A^{-1} =
-<span class="math display">\[\begin{pmatrix} d &amp; - b \\ -c &amp; a \end{pmatrix}\]</span>
-<p>.</p>
+<p><span class="math inline">\(A^{-1} = \frac{1}{ad - bc} \begin{pmatrix} d &amp; - b \\ -c &amp; a \end{pmatrix}.\)</span></p>
 </div></aside></section>
 <section id="exercise" class="slide level3 vevox" data-vevox-label="Matrix inverse">
 <h3>Exercise</h3>
@@ -493,16 +491,32 @@ A^{-1} =
 <p>This is equivalent to asking <strong>does <span class="math inline">\(A\)</span> have an inverse?</strong></p>
 </div>
 </section>
-<section id="definitions" class="slide level3">
+<section id="definitions" class="slide level3 write">
 <h3>Definitions</h3>
 <p>Let <span class="math inline">\(A\)</span> be a square <span class="math inline">\(n \times n\)</span> matrix.</p>
+<p>If <span class="math inline">\(n = 2\)</span>, <span class="math display">\[\begin{equation*}
+\det A = \det \begin{pmatrix} a_{11} &amp; a_{12} \\ a_{21} &amp; a_{22} \end{pmatrix}
+\end{equation*}\]</span></p>
+</section>
+<section class="slide level3">
+
+<p>If <span class="math inline">\(n = 3\)</span>, <span class="math display">\[\begin{align*}
+\det A &amp; = \det \begin{pmatrix} a_{11} &amp; a_{12} &amp; a_{13} \\
+a_{21} &amp; a_{22} &amp; a_{23} \\
+a_{31} &amp; a_{32} &amp; a_{33}
+\end{pmatrix} \\
+\end{align*}\]</span></p>
+</section>
+<section class="slide level3">
+
+<p>For general <span class="math inline">\(n\)</span>, the determinant can be found by, for example, Laplace expansions <span class="math display">\[
+\det A = \sum_{j=1}^n (-1)^{j+1} a_{1,j} M_{1,j},
+\]</span> where <span class="math inline">\(a_{1,j}\)</span> is the entry of the first row and <span class="math inline">\(j\)</span>th column of <span class="math inline">\(A\)</span> and <span class="math inline">\(M_{1,j}\)</span> is the the determinant of the submatrix obtained by removing the first row and the <span class="math inline">\(j\)</span>th column from <span class="math inline">\(A\)</span>.</p>
+<aside class="notes">
 <p>If <span class="math inline">\(n = 2\)</span>, <span class="math display">\[\begin{equation}
 \det A = \det \begin{pmatrix} a_{11} &amp; a_{12} \\ a_{21} &amp; a_{22} \end{pmatrix}
 = a_{11} a_{22} - a_{21} a_{12}.
 \end{equation}\]</span></p>
-</section>
-<section class="slide level3">
-
 <p>If <span class="math inline">\(n = 3\)</span>, <span class="math display">\[\begin{align*}
 \det A &amp; = \det \begin{pmatrix} a_{11} &amp; a_{12} &amp; a_{13} \\
 a_{21} &amp; a_{22} &amp; a_{23} \\
@@ -512,12 +526,17 @@ a_{31} &amp; a_{32} &amp; a_{33}
 &amp; \qquad - a_{12} (a_{21} a_{33} - a_{23} a_{31}) \\
 &amp; \qquad + a_{13} (a_{21} a_{32} - a_{22} a_{31}).
 \end{align*}\]</span></p>
-</section>
-<section class="slide level3">
-
-<p>For general <span class="math inline">\(n\)</span>, the determinant can be found by, for example, Laplace expansions <span class="math display">\[
-\det A = \sum_{j=1}^n (-1)^{j+1} a_{1,j} M_{1,j},
-\]</span> where <span class="math inline">\(a_{1,j}\)</span> is the entry of the first row and <span class="math inline">\(j\)</span>th column of <span class="math inline">\(A\)</span> and <span class="math inline">\(M_{1,j}\)</span> is the the determinant of the submatrix obtained by removing the first row and the <span class="math inline">\(j\)</span>th column from <span class="math inline">\(A\)</span>.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
 </section>
 <section id="example-i" class="slide level3 smaller write">
 <h3>Example i</h3>
@@ -556,7 +575,7 @@ A = \begin{pmatrix}
 \end{pmatrix}
 \]</span> the columns form a <em>parallelogram</em></p>
 </div><div class="column" style="width:60%;">
-<div id="01e9174b" class="cell" data-execution_count="4">
+<div id="ae7a8976" class="cell" data-execution_count="4">
 <div class="cell-output cell-output-display">
 <div>
 <figure>
@@ -578,7 +597,7 @@ A = \begin{pmatrix}
 \end{pmatrix},
 \]</span> the columns form a <em>parallelepiped</em></p>
 </div><div class="column" style="width:40%;">
-<div id="c3a70ef0" class="cell" data-execution_count="5">
+<div id="32213d34" class="cell" data-execution_count="5">
 <div class="cell-output cell-output-display">
 <div>
 <figure>
