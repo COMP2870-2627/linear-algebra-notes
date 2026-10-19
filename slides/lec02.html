@@ -556,7 +556,7 @@ A = \begin{pmatrix}
 \end{pmatrix}
 \]</span> the columns form a <em>parallelogram</em></p>
 </div><div class="column" style="width:60%;">
-<div id="e1f2e7d7" class="cell" data-execution_count="4">
+<div id="01e9174b" class="cell" data-execution_count="4">
 <div class="cell-output cell-output-display">
 <div>
 <figure>
@@ -578,7 +578,7 @@ A = \begin{pmatrix}
 \end{pmatrix},
 \]</span> the columns form a <em>parallelepiped</em></p>
 </div><div class="column" style="width:40%;">
-<div id="7fab3cd5" class="cell" data-execution_count="5">
+<div id="c3a70ef0" class="cell" data-execution_count="5">
 <div class="cell-output cell-output-display">
 <div>
 <figure>
@@ -926,6 +926,9 @@ W10=
     // and tell Safari the matching tint and light/dark scheme so the text in its
     // tab and status bars flips to stay readable.
     document.addEventListener('DOMContentLoaded', () => {
+      // print view lays every slide out at once; leave the page background alone
+      if (/print-pdf/i.test(window.location.search)) return;
+
       let themeColor = document.querySelector('meta[name="theme-color"]');
       if (!themeColor) {
         themeColor = document.createElement('meta');
